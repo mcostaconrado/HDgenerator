@@ -3,6 +3,8 @@ cursor={
 	y=0
 }
 
+radius = 5
+
 coordX = {}
 coordY = {}
 
@@ -39,17 +41,18 @@ function love.draw()
 	love.graphics.draw(strebelle, 0,0)
 	
 	love.graphics.setColor(255,0,0)
-	love.graphics.circle("fill", cursor.x, cursor.y, 15, 100)
+	love.graphics.circle("fill", cursor.x, cursor.y, radius, 100)
 	
 	for i=1, numCoord do
-		love.graphics.circle("fill", coordX[i], coordY[i], 15, 100)
-	end
+		love.graphics.circle("fill", coordX[i], coordY[i], radius, 100)
+	end	
    	
 end
 
-function love.mouse.isDown(x, y, button, istouch)
-   if button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
+function love.mousepressed(x, y, button)
+   if button == "l" or button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
    		isCircle = true
+   		numCoord = numCoord + 1
 		--love.graphics.setColor(255, 0,0);
 		--love.graphics.circle("fill", x, y, 50, 1000)
    end
