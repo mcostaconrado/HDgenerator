@@ -5,7 +5,7 @@ cursor={
 }
 
 coordX = {}
-coordY = {}
+coordY = {} 
 
 for i=1, 10000 do
 	coordX[i] = 0
@@ -49,6 +49,7 @@ function love.load()
 end
 
 
+
 function love.update(dt)
 	cursor.x = love.mouse.getX()
 	cursor.y = love.mouse.getY()
@@ -63,19 +64,34 @@ end
 
 function love.draw()
 	love.graphics.setColor(255,255,255) 
+
 	love.graphics.draw(strebelle.image, 0,0)
 	
 	love.graphics.setColor(255,0,0)
 	love.graphics.circle("fill", cursor.x, cursor.y, HD.radius, 100)
 	
+
 	for i=1, HD.numPoints do
 		love.graphics.circle("fill", coordX[i], coordY[i], HD.radius, 100)
-	end	   	
+	end	   	  
 end
 
 function love.mousereleased(x, y, button)
 	if button == "l" or button == 1 then -- Versions prior to 0.10.0 use the MouseConstant 'l'
    		isCircle = true
    		HD.numPoints = HD.numPoints + 1
-   end
+	end
 end
+
+function love.keypressed(escape)
+	love.event.quit()
+end
+
+function love.quit()
+  local file = io.open("HDLIST.txt", "w")
+  for i=1, HD.numPoints do
+    file:write(coordX[i].." "..coordY[i].." 0".."\n")
+  end
+  file:close()
+end
+
