@@ -151,12 +151,6 @@ function love.quit()
     end   
   end
   f:close()
-  for i = 1, 250 do
-    for j =1, 250 do
-      print(tbllines[i][j])
-    end
-  end
-  
   
   -- print HD points in file txt
 	local file = io.open("HDLIST.txt", "w")
@@ -165,7 +159,7 @@ function love.quit()
 		for j = coordY[current] - HD.radius, coordY[current] + HD.radius do
 			for i = coordX[current] - HD.radius, coordX[current] + HD.radius do 
 	  			if (math.sqrt(square(coordX[current] - i) + square(coordY[current] - j)) <= HD.radius) then
-					file:write(i-1 .." "..(strebelle.size.y - j - 1).." 0".. tbllines[i][j].."\n")
+					file:write(i-1 .." "..(strebelle.size.y - j - 1).." 0 ".. tbllines[i][j].."\n")
 				end
 			end
 		end
