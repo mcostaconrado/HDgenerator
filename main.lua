@@ -1,9 +1,6 @@
-cursor={
+-- Program for building simple Hard Data
 
-	x=0,
-	y=0
-}
-
+cursor = {x=0, y=0}
 coordX = {}
 coordY = {} 
 
@@ -32,7 +29,7 @@ function square(x)
 end
 
 function love.load()
-
+  
 	data = love.filesystem.newFile("data.txt")
 	data:open("r")
 	
@@ -75,8 +72,6 @@ function love.update(dt)
 		cursor.y = strebelle.size.x - HD.radius
 	end	
 	
-	
-	
 	if (isCircle) then			-- ESTE BLOCO NAO PERMITE QUE UM CÍRCULO SOBREESCREVA OUTRO
 		for i=1, HD.numPoints do
 			if((math.abs(coordX[i] - cursor.x)) <= HD.radius and (math.abs(coordY[i] - cursor.y)) <= HD.radius) then
@@ -114,25 +109,14 @@ function love.mousereleased(x, y, button)
 	end
 end
 
-function love.keypressed(escape)
+function love.keypressed(enter)
 	love.event.quit()
 end
 
 function love.quit()
-	--[[strebelle.sgems = love.filesystem.newFile("Strebelle" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".txt")
-	strebelle.sgems:open("r")
-	
-	local aux = {}
-	
-	for i=1, square(strebelle.size.x) do
-		aux[i] = love.filesystem.read(strebelle.sgems, 1)
-	end
-	
-	print(aux)]]--
-	
   -- open Strebelle which will be used to make the matrix
-	--local file1 = io.open("Strebelle" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".csv", "r")
-  local f = io.open("images/Strebelle_Pixelled.txt", "r")
+	local f = io.open("images/Strebelle" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".csv", "r")
+  --local f = io.open("images/Strebelle_Pixelled.txt", "r")
   -- Inicialize Matrix
 	local tbllines = {}
 	for i = 1, strebelle.size.x do
@@ -159,15 +143,20 @@ function love.quit()
       end
       if n1 == "\n" then
         n1 = f:read(1)
-        print("\n")
       end
       if n1 == "1" or n1 == "2" then
         tbllines[i][j] = n1
-        print("<"..i..","..j..">".." - ".. tbllines[i][j])
+        --print("<"..i..","..j..">".." - ".. tbllines[i][j])
       end   
     end   
   end
   f:close()
+  for i = 1, 250 do
+    for j =1, 250 do
+      print(tbllines[i][j])
+    end
+  end
+  
   
   -- print HD points in file txt
 	local file = io.open("HDLIST.txt", "w")
@@ -182,5 +171,6 @@ function love.quit()
 		end
 	end
   file:close()
+  
 end
 
