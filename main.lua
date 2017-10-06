@@ -173,7 +173,9 @@ function love.quit()
 		for j = coordY[current] - HD.radius, coordY[current] + HD.radius do
 			for i = coordX[current] - HD.radius, coordX[current] + HD.radius do 
         if (math.sqrt(square(coordX[current] - i) + square(coordY[current] - j)) <= HD.radius) then
-          file:write(i-1 .." "..(j - 1).." 0 ".. tbllines[i][j].."\n")
+          if ((i <= 250) and (j <= 250)) then
+            file:write(i-1 .." "..(j - 1).." 0 ".. tbllines[i][j].."\n")
+          end
         end
 			end
 		end
