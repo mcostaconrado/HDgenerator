@@ -48,10 +48,10 @@ function love.load()
 	strebelle.size.y = tonumber(parameters[2])
 	HD.radius = tonumber(parameters[3])
 	
-	strebelle.image = love.graphics.newImage("images/Strebelle_B&W_" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".bmp")
+	strebelle.image = love.graphics.newImage("images/Strebelle_B_W_" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".jpg")
 	--strebelle.image = love.graphics.newImage("images/Strebelle_B&W_250x250.bmp")
 	love.window.setMode(strebelle.size.x, strebelle.size.y)
-	
+	love.window.maximize()
 	data:close()
 end
 
@@ -130,44 +130,53 @@ function love.quit()
 	
 	print(aux)]]--
 	
-	local file = io.open("Strebelle" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".txt")
+  -- open Strebelle which will be used to make the matrix
+	--local file1 = io.open("Strebelle" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".csv", "r")
+  local f = io.open("images/Strebelle_Pixelled.txt", "r")
+  -- Inicialize Matrix
 	local tbllines = {}
-	for j = 1, strebelle.size.y do
-		tbllines[j] = {}
-		for i = 1, strebelle.size.x do
-			tbllines[j][i] = 0
+	for i = 1, strebelle.size.x do
+		tbllines[i] = {}
+		for j = 1, strebelle.size.y do
+			tbllines[i][j] = 0
 		end
 	end
-	local i = 1
-	local j = 1
-	if file then
-    	for line in file:lines() do
-    		for word in line:gmatch("%w+") do
-     			tbllines[i][j] = tonumber(word)
-     			i = i + 1
-     		end
-     		j = j+1
-    	end
-    	file:close()	
-	else
-   		error('file not found')
-	end	
-	
-	
-	for j=1, strebelle.size.y do
-		for i = 1, strebelle.size.x do
-			print(tbllines[i][j])
-		end
-		print("\n")
-	end
-	
+  
+  -- read values from the Strebelle_Pixelled
+	local i = 0
+	local j = 0
+  while i < 250 do
+    i =i + 1
+    n1 = 0
+    for j = 1, strebelle.size.y do
+      n1 = f:read(1)
+      
+      if n1 == nil then 
+        break 
+      end
+      if n1 == "," then
+        n1 = f:read(1)
+      end
+      if n1 == "\n" then
+        n1 = f:read(1)
+        print("\n")
+      end
+      if n1 == "1" or n1 == "2" then
+        tbllines[i][j] = n1
+        print("<"..i..","..j..">".." - ".. tbllines[i][j])
+      end   
+    end   
+  end
+  f:close()
+  
+  -- print HD points in file txt
 	local file = io.open("HDLIST.txt", "w")
 	for current=1, HD.numPoints do
-	print(coordX[current], coordY[current])
+    print(coordX[current], coordY[current])
 		for j = coordY[current] - HD.radius, coordY[current] + HD.radius do
 			for i = coordX[current] - HD.radius, coordX[current] + HD.radius do 
 	  			if (math.sqrt(square(coordX[current] - i) + square(coordY[current] - j)) <= HD.radius) then
-					file:write(i-1 .." "..strebelle.size.y - j - 1 .. " 0" .. " " .. tbllines[i][j] .. "\n")
+					file:write(i-1 .." "..(strebelle.size.y - j - 1).." 0".. tbllines[i][j].."\n")
 				end
 			end
 		end
