@@ -29,7 +29,7 @@ function square(x)
 end
 
 function love.load()
-  
+  love.filesystem.setIdentity("HardDatas")
 	data = love.filesystem.newFile("data.txt")
 	data:open("r")
 	
@@ -48,7 +48,7 @@ function love.load()
 	strebelle.image = love.graphics.newImage("images/Strebelle_B_W_" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".jpg")
 	--strebelle.image = love.graphics.newImage("images/Strebelle_B&W_250x250.bmp")
 	love.window.setMode(strebelle.size.x, strebelle.size.y)
-	love.window.maximize()
+
 	data:close()
 end
 
@@ -114,6 +114,7 @@ function love.keypressed(enter)
 end
 
 function love.quit()
+
   -- open Strebelle which will be used to make the matrix
 	local f = io.open("images/Strebelle" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".csv", "r")
   --local f = io.open("images/Strebelle_Pixelled.txt", "r")
@@ -129,10 +130,10 @@ function love.quit()
   -- read values from the Strebelle_Pixelled
 	local i = 0
 	local j = 0
-  while i < 250 do
-    i =i + 1
+  while j < 250 do
+    j =j + 1
     n1 = 0
-    for j = 1, strebelle.size.y do
+    for i = 1, strebelle.size.x do
       n1 = f:read(1)
       
       if n1 == nil then 
@@ -146,25 +147,41 @@ function love.quit()
       end
       if n1 == "1" or n1 == "2" then
         tbllines[i][j] = n1
-        --print("<"..i..","..j..">".." - ".. tbllines[i][j])
+        print("<"..i..","..j..">".." - ".. tbllines[i][j])
       end   
     end   
   end
   f:close()
+  local count = 0
+  for current=1, HD.numPoints do
+		for j = coordY[current] - HD.radius, coordY[current] + HD.radius do
+			for i = coordX[current] - HD.radius, coordX[current] + HD.radius do 
+        if (math.sqrt(square(coordX[current] - i) + square(coordY[current] - j)) <= HD.radius) then
+          count = count + 1
+        end
+			end
+		end
+	end
+  
+  
+ 
   
   -- print HD points in file txt
-	local file = io.open("HDLIST.txt", "w")
+	local file = io.open("HardDatas/HD"..count.."_"..os.time()..".txt", "w")
 	for current=1, HD.numPoints do
     print(coordX[current], coordY[current])
 		for j = coordY[current] - HD.radius, coordY[current] + HD.radius do
 			for i = coordX[current] - HD.radius, coordX[current] + HD.radius do 
-	  			if (math.sqrt(square(coordX[current] - i) + square(coordY[current] - j)) <= HD.radius) then
-					file:write(i-1 .." "..(strebelle.size.y - j - 1).." 0 ".. tbllines[i][j].."\n")
-				end
+        if (math.sqrt(square(coordX[current] - i) + square(coordY[current] - j)) <= HD.radius) then
+          file:write(i-1 .." "..(j - 1).." 0 ".. tbllines[i][j].."\n")
+        end
 			end
 		end
 	end
   file:close()
+ 
+  local screenshot = love.graphics.newScreenshot()
+  screenshot:encode("png", "HD"..count..".png")
   
 end
 
