@@ -1,4 +1,5 @@
 -- Program for building simple Hard Data
+scale = 2.5
 
 cursor = {x=0, y=0}
 coordX = {}
@@ -29,7 +30,6 @@ function square(x)
 end
 
 function love.load()
-  love.filesystem.setIdentity("HardDatas")
 	data = love.filesystem.newFile("data.txt")
 	data:open("r")
 	
@@ -43,11 +43,11 @@ function love.load()
 	
 	strebelle.size.x = tonumber(parameters[1])
 	strebelle.size.y = tonumber(parameters[2])
-	HD.radius = tonumber(parameters[3])
+	HD.radius = tonumber(parameters[3]) * scale
 	
 	strebelle.image = love.graphics.newImage("images/Strebelle_B_W_" .. strebelle.size.x .. "x" .. strebelle.size.y .. ".jpg")
 	--strebelle.image = love.graphics.newImage("images/Strebelle_B&W_250x250.bmp")
-	love.window.setMode(strebelle.size.x, strebelle.size.y)
+	love.window.setMode(strebelle.size.x * scale, strebelle.size.y * scale)
 
 	data:close()
 end
@@ -60,16 +60,16 @@ function love.update(dt)
 		cursor.x = HD.radius
 	end	
 	
-	if (cursor.x + HD.radius > strebelle.size.x) then
-		cursor.x = strebelle.size.x - HD.radius
+	if (cursor.x + HD.radius > strebelle.size.x * scale) then
+		cursor.x = (strebelle.size.x * scale) - HD.radius
 	end	
 	
 	if (cursor.y - HD.radius < 0) then
 		cursor.y = HD.radius
 	end	
 	
-	if (cursor.y + HD.radius > strebelle.size.y) then
-		cursor.y = strebelle.size.x - HD.radius
+	if (cursor.y + HD.radius > strebelle.size.y*scale) then
+		cursor.y = (strebelle.size.x * scale) - HD.radius
 	end	
 	
 	if (isCircle) then			-- ESTE BLOCO NAO PERMITE QUE UM CÍRCULO SOBREESCREVA OUTRO
@@ -92,14 +92,14 @@ end
 function love.draw()
 	love.graphics.setColor(255,255,255) 
 
-	love.graphics.draw(strebelle.image, 0,0)
-	
+	love.graphics.draw(strebelle.image, 0,0, 0, scale, scale)
+
 	love.graphics.setColor(255,0,0)
-	love.graphics.circle("fill", cursor.x, cursor.y, HD.radius, 100)
+	love.graphics.circle("line", cursor.x, cursor.y, HD.radius, 100)
 	
 
 	for i=1, HD.numPoints do
-		love.graphics.circle("fill", coordX[i], coordY[i], HD.radius, 100)
+		love.graphics.circle("line", coordX[i], coordY[i], HD.radius, 100)
 	end	   	  
 end
 
